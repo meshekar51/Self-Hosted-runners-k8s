@@ -1,0 +1,26 @@
+# Repository web URL: do not append .git.
+githubConfigUrl: "https://github.com/meshekar51/go-web-app-devops"
+# Reference only. The actual token is created separately in Kubernetes.
+githubConfigSecret: github-auth
+runnerScaleSetName: k8s-runners
+
+# Scale to zero when idle; allow at most ten total runners.
+minRunners: 0
+maxRunners: 10
+
+template:
+  spec:
+    nodeSelector:
+      kubernetes.io/os: linux
+    containers:
+      - name: runner
+        # Lab image. Pin a tested version/digest for production and maintain updates.
+        image: ghcr.io/actions/actions-runner:latest
+        command: ["/home/runner/run.sh"]
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
